@@ -1,0 +1,7 @@
+# Dependency directories
+academia/node_modules/
+academia/jspm_packages/
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+academia/build/Release
+
