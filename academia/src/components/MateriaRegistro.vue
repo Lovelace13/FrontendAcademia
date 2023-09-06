@@ -1,6 +1,6 @@
 <template>
     <div class="registro">
-      <h1> {{ title }}</h1>
+      <h2> {{ title }}</h2>
       <b-form @reset="onReset" v-if="show">
         <b-form-group id="input-group-1" label="Nombre de la Materia:"
           label-for="input-1">
