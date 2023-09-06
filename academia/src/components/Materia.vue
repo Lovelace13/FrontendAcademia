@@ -4,18 +4,23 @@
       <b-container class="panelMaterias">
         <b-row>
           <b-col cols="5">
-            <b-button @click="fetch">Consultar Materias</b-button>
-            <b-list-group>
-              <b-list-group-item v-for="materia in asignaturas" v-bind:key="materia.idmateria">
-                {{ materia.nombre }}
-              </b-list-group-item>
-            </b-list-group>
+            <b-button class="btnPrb" variant="info"
+              @click="fetch">Consultar Materias
+            </b-button>
+            <b-card class="mt-4" header="Lista de Materias">
+              <b-list-group>
+                <b-list-group-item v-for="materia in asignaturas" v-bind:key="materia.idmateria">
+                  {{ materia.nombre }}
+                </b-list-group-item>          
+              </b-list-group>
+            </b-card>
           </b-col>
           <b-col cols="7">
-            <b-button v-on:click="mostrarForm">
+            <b-button class="btnPrb" variant="primary" v-on:click="mostrarForm">
               Agregar registro
             </b-button>
-            <b-button v-show="mostrarFormulario" @click="ocultarForm">
+            <b-button class="btnPrb" variant="outline-dark"
+              v-show="mostrarFormulario" @click="ocultarForm">
               Cancelar Registro
             </b-button>
             <materiaRegistro v-show="mostrarFormulario"/>
@@ -54,15 +59,24 @@ export default {
   methods: {
     fetch(){
       var url = "graphql"    
-      const graphqlQuery = {
-        "operationName": "",
-        "query": `query { asignaturas { descripcion codigo nombre } }`,
-        "variables": {}
-      };
+
       const headers = {
         "content-type": "application/json",
         'X-CSRFToken': VueCookies.get('csrftoken')
       };
+      var prueba = {
+            query:`
+              {
+                asignaturas 
+                { 
+                  idmateria
+                  nombre
+                }
+              }
+            `
+          }
+
+      console.log(prueba)
 //Colocar Get cuando use las apis normales
       let listaMaterias = axios({
           url: url,
@@ -75,15 +89,13 @@ export default {
                 { 
                   idmateria
                   nombre
-                  descripcion 
-                  codigo 
                 }
               }
             `
           },
         })
         .then((res) => {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           this.asignaturas = res.data.data.asignaturas
         })
         .catch(err => {
@@ -102,6 +114,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.btnPrb {
+  margin: 5px 5px;
+} 
+
+h1 {
+  margin: 5px;
+  /* color:#42b983 */
+}
+
 h3 {
   margin: 40px 0 0;
 }

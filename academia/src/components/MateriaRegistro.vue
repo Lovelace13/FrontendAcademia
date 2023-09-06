@@ -1,35 +1,44 @@
 <template>
     <div class="registro">
-      <h2> {{ title }}</h2>
-      <b-form @reset="onReset" v-if="show">
-        <b-form-group id="input-group-1" label="Nombre de la Materia:"
-          label-for="input-1">
-          <b-form-input id="input-1" v-model="formulario.nombre"
+      <!-- <h3> {{ title }}</h3> v-if="show" -->
+      <b-form @submit="checkForm" >
+        <b-card class="mt-4" :header="title">
+          <p v-if="errors.length">
+            <b>Please correct the following error(s):</b>
+            <ul>
+              <li v-for="error in errors" v-bind:key="error.value">{{ error }}</li>
+            </ul>
+          </p>
+          <b-form-group id="inputMateria" label="Nombre de la Materia:" label-for="nombre">
+          <b-form-input id="nombre" v-model="formulario.name" required
             placeholder="Ingrese nombre de la materia"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group id="input-group-2" label="Codigo de la Materia:"
-          label-for="input-2">
-          <b-form-input id="input-2" v-model="formulario.codigo"
-            placeholder="Ingrese el codigo"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group id="input-group-3" label="Descripcion de la Materia:"
-          label-for="input-3">
-          <b-form-input id="input-3" v-model="formulario.descripcion"
-            placeholder="Ingrese una descripcion para la materia"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <!-- <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger" @click="onReset">Reset</b-button> -->
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group id="inputCodigo" label="Codigo de la Materia:" label-for="codigo">
+            <b-form-input id="codigo" v-model="formulario.code" required
+              placeholder="Ingrese el codigo"
+            ></b-form-input>
+          </b-form-group>
+          
+          <b-form-group id="inputDescripcion" label="Descripcion de la Materia:" label-for="descripcion">
+            <b-form-input id="descripcion" v-model="formulario.description" required
+              placeholder="Ingrese una descripcion para la materia"
+            ></b-form-input>
+          </b-form-group>
+          <b-row align-h="between" fluid class="mt-3">
+            <!-- <p><input type="submit" value="Enviar"></p> -->
+            <b-button variant="outline-primary" @click="guardar">Guardar</b-button>
+            <!-- <b-button class="mt-2" type="reset" variant="outline-danger" @click="onReset">Reset</b-button> -->
+          </b-row>
+          </b-card>
       </b-form>
     </div>
 </template>
 
 <script>
+import axios from "axios";
+import VueCookies from 'vue-cookies'
 
 export default {
   name: 'MateriaRegistroComponente',
@@ -41,12 +50,12 @@ export default {
     // }
 
     return{
+      errors:[],
       formulario: {
-        nombre:'',
-        codigo:'',
-        descripcion:''
-      },
-      show: true
+        code:'',
+        description:'',
+        name:''
+      }
     }
   },
   setup(){
@@ -56,17 +65,55 @@ export default {
     }
   },
   methods: {
+    guardar() {
+      var miMutacion = Object.values(this.formulario)
+      var url = "graphql"    
+      const graphqlQuery = `mutation { createMateria ( code: "${miMutacion[0]}" , description: "${miMutacion[1]}" , name: "${miMutacion[2]}" ) { asignatura { codigo descripcion nombre } } }`;
+
+      const headers = {
+        "content-type": "application/json",
+        'X-CSRFToken': VueCookies.get('csrftoken')
+      };
+
+      // console.log(graphqlQuery)
+
+      let guardarMateria = axios(
+          {
+          url: url,
+          method: 'POST',
+          headers: headers,
+          data: {
+            query: graphqlQuery,
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+    },
     onReset(event) {
       event.preventDefault()
       // Reset our form values
-      this.form.nombre = ''
-      this.form.codigo = ''
-      this.form.descripcion = null
+      this.formulario.nombre = ''
+      this.formulario.codigo = ''
+      this.formulario.descripcion = null
       // Trick to reset/clear native browser form validation state
       // this.show = false
       // this.$nextTick(() => {
       //   this.show = true
       // })
+    },
+    checkForm: function (e) {
+      this.errors = [];
+      if (!this.form.nombre) {
+        this.errors.push("El nombre es obligatorio.");
+        console.log("inrese")
+      }
+      e.preventDefault();
     }
   },
   props: {
