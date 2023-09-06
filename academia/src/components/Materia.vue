@@ -1,13 +1,36 @@
 <template>
-    <div class="materia">
+    <div class="MateriaComponente">
       <h1> {{ title }}</h1>
-      <p>Pruebas</p>
+      <b-button @click="fetch">Consultar Materias</b-button>
+      <ul>
+        <!-- <li v-for=""></li> -->
+      </ul>
+      <b-button v-on:click="mostrarForm">
+        Agregar registro
+      </b-button>
+      <b-button v-show="mostrarFormulario" @click="ocultarForm">
+        Cancelar Registro
+      </b-button>
+      <materiaRegistro v-show="mostrarFormulario"/>
     </div>
 </template>
 
 <script>
+import materiaRegistro from "./MateriaRegistro"
+import axios from "axios";
+
 export default {
   name: 'MateriaComponente',
+  components: {
+    materiaRegistro,
+  },
+  data(){
+    // mostrarFormulario
+    return {
+      mostrarFormulario: false,
+      asignaturas: [],
+    }
+  },
   setup(){
     const title = "Lista de Materias";
     return{
@@ -16,7 +39,29 @@ export default {
   },
   props: {
     msg: String
-  }
+  },
+  methods: {
+    fetch(){
+      // .get("http://127.0.0.1:8000/materias/")
+      var url = "materias/"    
+      let listaMaterias = axios({
+          url: url,
+          method: 'GET',
+        })
+        .then((res) => {
+          this.asignaturas = res.data.Asignaturas
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    mostrarForm: function(){
+      this.mostrarFormulario = true;
+    },
+    ocultarForm: function(){
+      this.mostrarFormulario = false;
+    }
+  },
 }
 </script>
 

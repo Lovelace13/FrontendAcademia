@@ -1,22 +1,18 @@
 <template>
   <div id="app">
-    <div>
-      <b-card no-body>
-        <b-tabs card>
-          <b-tab title="Materia" router-link :to="{ name: 'Materias'}">
-            <b-card-text><p>Lista de Materias en curso</p></b-card-text>
-          </b-tab>
-          <b-tab title="Aula">
-            <router-link to="/aulas">Lista de aulas disponibles</router-link>
-          </b-tab>
-          <b-tab title="Profesor">
-            <router-link :to="{ name: 'profesores'}">
-              <p>Lista de profesores activos</p>
-            </router-link>
-          </b-tab>
-          <b-tab title="Horarios" disabled><p>En construccion!</p></b-tab>
-        </b-tabs>
-      </b-card>
+    <div class="cabecera">
+      <b-nav tabs align="center">
+        <b-nav-item router-link to="/materias">
+          <p>Materias</p>
+        </b-nav-item>
+        <b-nav-item router-link to="/aulas">
+          <p>Aulas</p>
+        </b-nav-item>
+        <b-nav-item router-link :to="{ name: 'profesores'}">
+          <p>Profesores</p>
+        </b-nav-item>
+        <b-nav-item disabled><p>Horarios!</p></b-nav-item>
+      </b-nav>
     </div>
     <router-view/>
   </div>
@@ -39,4 +35,18 @@ export default {
   color: #2c3e50;
   margin-top: 0px;
 }
+
+.cabecera{
+  background-color: #94CDCD;
+}
+
+.nav-tabs .nav-item{
+  font-family:Verdana, Geneva, Tahoma, sans-serif ;
+  font-weight: bold;
+}
+
+.p{
+  color: black;
+}
+
 </style>
